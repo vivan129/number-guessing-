@@ -1,0 +1,152 @@
+import random
+import json
+import os
+
+# -------------------------------
+# FILE WHERE PLAYER STATS ARE SAVED
+# -------------------------------
+STATS_FILE = "player_stats.json"
+
+
+# -------------------------------
+# LOAD EXISTING STATS OR CREATE NEW
+# -------------------------------
+def load_stats():
+    # If the file exists, load the statistics
+    if os.path.exists(STATS_FILE):
+        with open(STATS_FILE, "r") as file:
+            return json.load(file)
+
+    # If no file exists, create default stats
+    return {
+        "games_played": 0,
+        "games_won": 0,
+        "total_guesses": 0
+    }
+
+
+# -------------------------------
+# SAVE STATS TO FILE
+# -------------------------------
+def save_stats(stats):
+    with open(STATS_FILE, "w") as file:
+        json.dump(stats, file)
+
+
+# -------------------------------
+# DIFFICULTY SETTINGS
+# -------------------------------
+def choose_difficulty():
+    print("\nChoose difficulty:")
+    print("1. Easy (1–10)")
+    print("2. Medium (1–50)")
+    print("3. Hard (1–100)")
+
+    choice = input("Enter choice: ")
+
+    if choice == "1":
+        return 10
+    elif choice == "2":
+        return 50
+    else:
+        return 100
+
+
+# -------------------------------
+# MAIN GAME FUNCTION
+# -------------------------------
+def play_game(stats):
+
+    max_number = choose_difficulty()
+
+    # Random number generation
+    secret_number = random.randint(1, max_number)
+
+    guesses = 0
+
+    print(f"\nI am thinking of a number between 1 and {max_number}")
+
+    while True:
+
+        guess = int(input("Enter your guess: "))
+        guesses += 1
+
+        # If guess is too low
+        if guess < secret_number:
+            print("Too low! Try again.")
+
+        # If guess is too high
+        elif guess > secret_number:
+            print("Too high! Try again.")
+
+        # Correct guess
+        else:
+            print("Correct! You guessed it!")
+            print(f"It took you {guesses} guesses.")
+
+            stats["games_won"] += 1
+            stats["total_guesses"] += guesses
+            break
+
+    stats["games_played"] += 1
+
+
+# -------------------------------
+# DISPLAY PLAYER STATISTICS
+# -------------------------------
+def show_stats(stats):
+
+    print("\n----- Player Statistics -----")
+
+    games = stats["games_played"]
+    wins = stats["games_won"]
+
+    if games > 0:
+        win_rate = (wins / games) * 100
+        avg_guesses = stats["total_guesses"] / wins if wins > 0 else 0
+    else:
+        win_rate = 0
+        avg_guesses = 0
+
+    print("Games Played:", games)
+    print("Games Won:", wins)
+    print("Win Rate:", round(win_rate, 2), "%")
+    print("Average Guesses (wins only):", round(avg_guesses, 2))
+
+
+# -------------------------------
+# MAIN PROGRAM LOOP
+# -------------------------------
+def main():
+
+    stats = load_stats()
+
+    print("Welcome to the Number Guessing Game!")
+
+    while True:
+
+        print("\nMenu")
+        print("1. Play Game")
+        print("2. View Statistics")
+        print("3. Exit")
+
+        choice = input("Choose an option: ")
+
+        if choice == "1":
+            play_game(stats)
+            save_stats(stats)
+
+        elif choice == "2":
+            show_stats(stats)
+
+        elif choice == "3":
+            save_stats(stats)
+            print("Goodbye!")
+            break
+
+        else:
+            print("Invalid choice.")
+
+
+# Start program
+main()
