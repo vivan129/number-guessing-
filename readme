@@ -1,0 +1,29 @@
+The player chooses:
+Easy → numbers 1–10
+Medium → numbers 1–50
+Hard → numbers 1–100
+The computer generates a random number in that range.
+2. Guessing System
+The program:
+Takes a guess
+Tells the player if the guess is too high or too low
+Repeats until the correct number is guessed
+3. Statistics Tracker
+The program tracks:
+Games Played
+Games Won
+Total Guesses
+From this it calculates:
+Win Rate
+Average Guesses
+4. File Saving System
+The program saves stats using a JSON file.
+Example file:
+player_stats.json
+Example content:
+{
+  "games_played": 5,
+  "games_won": 4,
+  "total_guesses": 22
+}
+This allows the stats to persist even after closing the program.
